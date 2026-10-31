@@ -1,5 +1,26 @@
 # 更新日志
 
+## 0.2.0 — 2026-10-31
+
+### 变更
+
+- 按 App 重新组织目录：`ghostty/`、`cmux/` 各一个目录，每个目录带一份 `README.md` 说明该 App 的配置构成与读它的程序。
+- 新增 `mappings.conf`：用「仓库内路径 → 系统目标路径 → 权限 → 说明」的表格描述部署关系，`install.sh` 与 `check.sh` 都读它；以后新增 App 只改这一张表，不用动脚本。
+- `install.sh` / `check.sh` 改为遍历映射表，输出里带每条的用途说明。
+
+### 新增
+
+- 根 README 增加「共用配置文件（重要）」章节与表格：明确 `ghostty/config` 同时被 **Ghostty 与 cmux** 读取（cmux 基于 libghostty，读同一份配置），`cmux/config.ghostty` 虽是 Ghostty 语法但**只有 cmux** 读；并写明新增 App 时同步该表的要求。
+- `ghostty/README.md`、`cmux/README.md`：分别说明本目录文件、跨 App 共用关系、cmux 的中文 codepoint-map 注入行为与对策。
+- `ghostty/config` 文件头加共用标注（哪个程序在读、只想影响 cmux 该改哪里）。
+- `cmux/config.ghostty` 文件头补「Ghostty 语法但只有 cmux 读」的两句话说明。
+
+### 仓库治理
+
+- 本项目登记为 Kit（ExecutiveAssistantAgent）的子项目：全局 `agents-registry.md` 子项目映射表、本项目 `AGENTS.md` 子项目清单同步新增。
+- 仓库根挂 `AGENTS.md` 软链接（→ `../ExecutiveAssistantAgent/AGENTS.md`）与真实 `.pi/` 目录（`settings.json` 用路径引用 Kit 项目的 extensions / skills / prompts / themes），随仓库提交。
+- `xhqing` 公开名册暂不同步（私有仓库，公开描述语待用户确认），在 roster-sync 的 `allowlist.json` 登记豁免。
+
 ## 0.1.0 — 2026-10-31
 
 ### 新增

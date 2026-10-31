@@ -1,5 +1,10 @@
 # cmux 设置界面（Settings → Terminal → Ghostty 那几行）写出的终端覆盖项。
 #
+# ⚠️ 跨 App 关系（两句话）：
+#   1. 本文件用 Ghostty 的配置语法，但**只有 cmux 读它**（Ghostty 应用不会读这个路径）。
+#   2. Ghostty 与 cmux 真正共用的配置文件是 ../ghostty/config（即 ~/.config/ghostty/config），
+#      两个终端都读；本文件加载在它之后，能覆盖同名键。
+#
 # 为什么不直接写在这里：cmux 会把值写进这个文件（字体、字号、光标、内边距、
 # 透明度、scrollback 等），它在 ~/.config/ghostty/config 之后加载，所以能覆盖
 # 上面的同名键。这里只留注释，实际内容由 cmux 自己写。

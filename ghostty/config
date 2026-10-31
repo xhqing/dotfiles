@@ -1,3 +1,8 @@
+# ⚠️ 共用文件：Ghostty 与 cmux 两个终端都读这份配置（cmux 基于 libghostty，读同一个路径）。
+# 改这里会同时影响两个终端；只想影响 cmux 的终端设置请改
+#   ~/Library/Application Support/com.cmuxterm.app/config.ghostty
+# 本文件由 dotfiles 仓库托管（~/Developer/dotfiles/ghostty/config），软链到 ~/.config/ghostty/config。
+#
 # 主题：GitHub Dark Default（GitHub 官网标准暗色，背景 #0d1117）
 # theme = Dracula
 # theme = GitHub Light Default

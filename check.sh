@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 # 检查本机配置是否仍由本仓库托管：
-#   1. 两个配置文件是不是指向仓库的软链（被 cmux 的原子写替换成普通文件时会掉链）
-#   2. 软链内容与仓库是否一致（软链正常时必然一致，这里主要防"链指向别处"）
-#   3. UserDefaults 快照是否与当前值有差异（差异只提示，不自动改）
+#   1. mappings.conf 里每一条是不是指向仓库的软链（被原子写替换成普通文件时会掉链）
+#   2. UserDefaults 快照是否与当前值有差异（差异只提示，不自动改）
+#   3. 仓库本身是否有未提交改动
 set -uo pipefail
 
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+MAP="$REPO/mappings.conf"
 fail=0
 
 check_link() {
@@ -19,7 +20,7 @@ check_link() {
   fi
 
   if [ ! -L "$target" ]; then
-    echo "❌ $target 不是软链（可能被某个程序原子写替换了）"
+    echo "❌ $target 不是软链（可能被某个程序原子写替换了）——跑 ./install.sh 修好"
     fail=1
     return
   fi
@@ -36,9 +37,13 @@ check_link() {
 }
 
 echo "== 软链 =="
-check_link "$HOME/.config/ghostty/config" "ghostty/config"
-check_link "$HOME/.config/cmux/cmux.json" "cmux/cmux.json"
-check_link "$HOME/Library/Application Support/com.cmuxterm.app/config.ghostty" "cmux/config.ghostty"
+while IFS=$'\t' read -r src dst mode note; do
+  case "$src" in
+    ''|'#'*) continue ;;
+  esac
+  dst="${dst/#\~/$HOME}"
+  check_link "$dst" "$src"
+done < "$MAP"
 
 echo
 echo "== UserDefaults 快照 =="

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# 把本仓库的配置部署到这台机器上：软链 + UserDefaults 快照 + 提示重载。
+# 把本仓库的配置部署到这台机器上：按 mappings.conf 建软链 + 写回 UserDefaults 快照 + 提示重载。
 #
 # 新机器上的用法（clone 之后）：
 #   ./install.sh
@@ -9,12 +9,13 @@
 set -euo pipefail
 
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-APP_SUPPORT="$HOME/Library/Application Support/com.cmuxterm.app"
+MAP="$REPO/mappings.conf"
 
-# link <仓库内相对路径> <系统目标路径>
+# link <仓库内相对路径> <系统目标路径> <权限|->
 link() {
   local src="$REPO/$1"
   local dst="$2"
+  local mode="$3"
 
   if [ ! -e "$src" ]; then
     echo "跳过：仓库里没有 $1"
@@ -31,16 +32,21 @@ link() {
   fi
 
   ln -sfn "$src" "$dst"
+  if [ "$mode" != "-" ] && [ -n "$mode" ]; then
+    chmod "$mode" "$src"
+  fi
   echo "链接 $dst -> $src"
 }
 
-echo "== 1. 终端与 cmux 配置 =="
-link "ghostty/config" "$HOME/.config/ghostty/config"
-link "cmux/cmux.json" "$HOME/.config/cmux/cmux.json"
-
-# cmux 设置界面写出的终端覆盖项：仓库里始终保留这个文件并接上软链，
-# 这样以后在 cmux 设置里改字体 / 光标 / 内边距等，改动会直接落在仓库里，git 一看就知道。
-link "cmux/config.ghostty" "$APP_SUPPORT/config.ghostty"
+echo "== 1. 按 App 建软链 =="
+while IFS=$'\t' read -r src dst mode note; do
+  case "$src" in
+    ''|'#'*) continue ;;
+  esac
+  dst="${dst/#\~/$HOME}"
+  [ -n "$note" ] && echo "  ($note)"
+  link "$src" "$dst" "$mode"
+done < "$MAP"
 
 echo
 echo "== 2. cmux 的 UserDefaults 快照 =="
@@ -51,12 +57,7 @@ else
 fi
 
 echo
-echo "== 3. 权限与生效 =="
-# cmux.json 里可能写 socketControlPassword，收紧到仅本人可读
-if [ -f "$REPO/cmux/cmux.json" ]; then
-  chmod 600 "$REPO/cmux/cmux.json"
-fi
-
+echo "== 3. 生效 =="
 if command -v cmux >/dev/null 2>&1; then
   cmux reload-config >/dev/null 2>&1 && echo "已执行 cmux reload-config" || echo "提示：cmux reload-config 失败，可手动重载"
 else
