@@ -39,7 +39,7 @@ dotfiles/
 ## 新机器恢复步骤
 
 ```bash
-git clone <本仓库地址> ~/Developer/dotfiles
+git clone git@github.com:xhqing/dotfiles.git ~/Developer/dotfiles
 cd ~/Developer/dotfiles
 ./install.sh          # 建软链 + 写回 UserDefaults + cmux reload-config
 ```

@@ -21,7 +21,8 @@
 
 - 本项目登记为 Kit（ExecutiveAssistantAgent）的子项目：全局 `agents-registry.md` 子项目映射表、本项目 `AGENTS.md` 子项目清单同步新增。
 - 仓库根挂 `AGENTS.md` 软链接（→ `../ExecutiveAssistantAgent/AGENTS.md`）与真实 `.pi/` 目录（`settings.json` 用路径引用 Kit 项目的 extensions / skills / prompts / themes），随仓库提交。
-- `xhqing` 公开名册暂不同步（私有仓库，公开描述语待用户确认），在 roster-sync 的 `allowlist.json` 登记豁免。
+- 已建私有远程仓库 <https://github.com/xhqing/dotfiles>（2026-10-31，用户授权），README 恢复步骤里的地址改为实际地址。
+- 按用户 2026-10-31 的新指示，公开名册改为与全局注册表实时同步（不再逐次征询），dotfiles 已写入 `xhqing` 中英名册，原 allowlist 豁免已删除。
 
 ## 0.1.0 — 2026-10-31
 
