@@ -17,6 +17,8 @@
 
 ### 仓库治理
 
+- `fileExplorer.isVisible` 从 UserDefaults 白名单移除：它只是「侧栏此刻开没开」的瞬时状态，不是偏好；收进来会让 `check.sh` 因为开关一次侧栏就误报「快照过期」。宽度 `fileExplorer.width` 仍保留。
+
 - 本项目登记为 Kit（ExecutiveAssistantAgent）的子项目：全局 `agents-registry.md` 子项目映射表、本项目 `AGENTS.md` 子项目清单同步新增。
 - 仓库根挂 `AGENTS.md` 软链接（→ `../ExecutiveAssistantAgent/AGENTS.md`）与真实 `.pi/` 目录（`settings.json` 用路径引用 Kit 项目的 extensions / skills / prompts / themes），随仓库提交。
 - `xhqing` 公开名册暂不同步（私有仓库，公开描述语待用户确认），在 roster-sync 的 `allowlist.json` 登记豁免。

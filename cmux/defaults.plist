@@ -12,8 +12,6 @@
 	<false/>
 	<key>confirmQuit</key>
 	<string>never</string>
-	<key>fileExplorer.isVisible</key>
-	<false/>
 	<key>fileExplorer.width</key>
 	<real>441.410156</real>
 	<key>rightSidebar.mode</key>

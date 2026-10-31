@@ -35,8 +35,9 @@ WHITELIST = [
     "sidebarTintOpacity",
     "sidebarAppearanceDefaultsVersion",
     # 右侧栏与文件浏览器
+    # 注意：fileExplorer.isVisible 故意不收——它只是「侧栏此刻开没开」的瞬时状态，
+    # 不属用户偏好；收进来会让 check.sh 因为开关一次侧栏就报「快照过期」。
     "rightSidebar.mode",
-    "fileExplorer.isVisible",
     "fileExplorer.width",
 ]
 
