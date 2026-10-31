@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>SUEnableAutomaticChecks</key>
+	<true/>
+	<key>appearanceMode</key>
+	<string>system</string>
+	<key>browserThemeMode</key>
+	<string>dark</string>
+	<key>cmuxDisableBundleIconPersistence</key>
+	<false/>
+	<key>confirmQuit</key>
+	<string>never</string>
+	<key>fileExplorer.isVisible</key>
+	<false/>
+	<key>fileExplorer.width</key>
+	<real>441.410156</real>
+	<key>rightSidebar.mode</key>
+	<string>files</string>
+	<key>sidebarAppearanceDefaultsVersion</key>
+	<integer>1</integer>
+	<key>sidebarBlendMode</key>
+	<string>withinWindow</string>
+	<key>sidebarBlurOpacity</key>
+	<real>1.0</real>
+	<key>sidebarCornerRadius</key>
+	<real>0.0</real>
+	<key>sidebarMatchTerminalBackground</key>
+	<true/>
+	<key>sidebarMaterial</key>
+	<string>sidebar</string>
+	<key>sidebarPreset</key>
+	<string>nativeSidebar</string>
+	<key>sidebarTintHex</key>
+	<string>#000000</string>
+	<key>sidebarTintOpacity</key>
+	<real>0.18</real>
+</dict>
+</plist>

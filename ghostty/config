@@ -1,0 +1,82 @@
+# 主题：GitHub Dark Default（GitHub 官网标准暗色，背景 #0d1117）
+# theme = Dracula
+# theme = GitHub Light Default
+# theme = GitHub Dark
+theme = GitHub Dark Default
+# theme = Material
+# theme = Dark Modern
+
+# 手动背景/前景覆盖（试色期间的历史设置，已全部停用，交给主题自己配色）
+# background = #000000
+# background = #ffffff
+# foreground = #000000
+
+# 字体：Menlo，并把默认文本样式映射到 Bold，实现普通文字默认加粗
+font-family = Menlo
+font-style = Bold
+# 第二字体族：中文回退到 PingFang SC（2026-10-30 加）。
+#
+# 为什么必须写这一行：cmux 是基于 Ghostty 内核（libghostty）的终端，为了不让中文落到
+# 奇怪的装饰字体上，它会在**用户没有显式多字体族回退链**时，自动往终端配置里注入一段
+#   font-codepoint-map = U+4E00-U+9FFF=PingFang SC  （以及若干中日韩区段）
+# 而这种 codepoint-map 在 Ghostty 里**一律按 Regular 字重解析**（源码 CodepointResolver
+# 里 `.style = .regular` 写死）。结果就是：Ghostty 里的中文走正常回退解析、能吃到 Bold
+# 样式，落到 PingFang SC Semibold；cmux 里的中文被钉死在 PingFang SC Regular，看起来更细。
+#
+# 只要 font-family 出现两项以上，cmux 就认定「用户自己配了回退链」，不再注入那段 map
+# （cmux 源码 GhosttyConfigDiscovery.swift 的 autoInjectedCJKFontMappings()：
+#  summary.hasExplicitFontFamilyFallbackChain 为真时直接返回 nil）。
+# 于是两个终端都走 Ghostty 自己的回退解析，中文都是 PingFang SC Semibold，外观一致。
+font-family = PingFang SC
+
+# 字号：默认 13，调大一档到 14
+font-size = 14
+
+# 光标：竖线（bar）。此前用过满格方块（block），2026-09-18 应要求改回竖线。
+# no-cursor 继续关闭 shell integration 在提示符处自动改光标的行为，让竖线全程固定；
+# vim 等程序仍可用转义序列按模式改光标，终端配置管不住，属正常现象。
+# 竖线加粗：adjust-cursor-thickness（像素或百分比，仅对 bar / 空心方块生效）；
+# 2026-09-24 应要求设 +50%（默认太细），后加到 200%；2026-10-16 应要求再加粗一倍到 400%，
+# 之后应要求减细 25% 回到 300%。
+# 光标颜色：绿色（写在 theme 之后，覆盖主题自带的光标配色；2026-10-16 应要求由白色改绿）。
+cursor-style = bar
+adjust-cursor-thickness = 300%
+cursor-color = #00ff00
+shell-integration-features = no-cursor,no-sudo,title,no-ssh-env,no-ssh-terminfo,path
+
+# ── 窗口尺寸与位置：等比缩小到屏幕约 75%，居中显示 ────────────────
+# 实测基准（MacBook Air M1 内置屏，Retina 2x）
+#   逻辑分辨率 1280x800；可见区域 1280x696（顶留菜单栏 30，底留 Dock 74）
+#   Menlo 14pt：字符推进宽 8.4287pt、行高 16.2969pt
+#   Ghostty 按 @round(值 x 2) / 2 取整 → 单元格 8.5 x 16.5 点
+#   window-padding-x/y 默认 2 点（四边各 2）
+#
+# 反推格数（window-width/height 单位是终端格数，不是像素）
+#   宽 = 112 x 8.5 + 4          = 956 点 → 956 / 1280 = 74.7%
+#   高 = 26  x 16.5 + 4 + 28    = 461 点 → 461 / 696  = 66.2%
+#                        ↑ macOS 标题栏
+# 居中坐标（单位是像素，相对可见区域左上角；两个值必须成对设置才生效）
+#   x = (1280 - 956) / 2 = 162
+#   y = (696  - 461) / 2 = 117
+window-width = 107
+window-height = 32
+window-position-x = 201
+window-position-y = 114
+#
+# 换比例：先按 W = 列 x 8.5 + 4、H = 行 x 16.5 + 32 选格数，
+#         再按 x = (1280 - W) / 2、y = (696 - H) / 2 算坐标。
+#   60% → 90 列 x 23 行（769 x 412）→ x=256, y=142
+#   70% → 105 列 x 28 行（896 x 494）→ x=192, y=101
+#   80% → 120 列 x 32 行（1024 x 560）→ x=128, y=68
+#   85% → 127 列 x 34 行（1084 x 593）→ x=98,  y=52
+
+# ── Quick Terminal：全局热键抽屉终端（Quake 风格）─────────────
+# 任何 App 里按热键，终端从屏幕顶部滑出；失焦自动收起，会话状态保留，
+# 下次唤出接着用。global: 前缀 = 系统级全局生效（VSCode 全屏时也能唤出）。
+# 当前键：Ctrl+Shift+反引号（~ 键，数字 1 左边那颗）。
+# 为什么不用单按反引号：拼音输入法会把它吃掉变成间隔号·，唤不出来；
+# 且英文态单按被热键独占后，markdown 反引号也打不出来。
+keybind = global:ctrl+shift+grave_accent=toggle_quick_terminal
+
+# EXPERIMENT: cmd+v paste image in pi TUI (performable pass-through). Remove if not needed.
+keybind = performable:super+v=paste_from_clipboard
