@@ -7,7 +7,7 @@
 - 建立仓库：把 cmux / Ghostty 的个人配置集中到一处，换设备 clone 后跑 `install.sh` 即可恢复。
   - `ghostty/config`：终端层设置（字体族、字号、加粗样式、主题、光标、窗口尺寸、Quick Terminal 热键、粘贴图片 keybind）。
   - `cmux/cmux.json`：cmux 应用层设置（外观、浏览器行为、侧边栏外观等）。
-  - `cmux/config.ghostty`：cmux 设置界面写出的终端覆盖文件（本机目前不存在，`install.sh` 会自动跳过）。
+  - `cmux/config.ghostty`：cmux 设置界面写出的终端覆盖文件。仓库里常驻一个只带注释的同名文件并始终接上软链，以后在 cmux 设置里改字体 / 光标 / 内边距等，改动直接落进仓库。
   - `cmux/defaults.plist`：UserDefaults 里属于用户偏好的白名单快照（外观模式、侧边栏样式、右侧栏模式、文件浏览器宽度等），排除登录凭证、遥测 ID、会话与窗口状态。
 - `install.sh`：幂等部署脚本，把配置文件改为指向仓库的软链（原文件先改名备份），并写回 UserDefaults 快照，最后 `cmux reload-config`。
 - `check.sh`：检查软链是否完好、UserDefaults 快照是否过期、仓库是否干净。

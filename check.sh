@@ -38,9 +38,7 @@ check_link() {
 echo "== 软链 =="
 check_link "$HOME/.config/ghostty/config" "ghostty/config"
 check_link "$HOME/.config/cmux/cmux.json" "cmux/cmux.json"
-if [ -f "$REPO/cmux/config.ghostty" ]; then
-  check_link "$HOME/Library/Application Support/com.cmuxterm.app/config.ghostty" "cmux/config.ghostty"
-fi
+check_link "$HOME/Library/Application Support/com.cmuxterm.app/config.ghostty" "cmux/config.ghostty"
 
 echo
 echo "== UserDefaults 快照 =="

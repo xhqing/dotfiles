@@ -35,7 +35,7 @@ cd ~/Developer/dotfiles
 
 配置只有一份实体，改一处两边同步，不会出现「仓库里是旧版本」的漂移。
 
-cmux 对这两个文件的写入都是跟随软链的（写前 `resolvingSymlinksInPath` 再落盘），
+cmux 对这三个文件的写入都是跟随软链的（写前 `resolvingSymlinksInPath` 再落盘），
 所以不会把软链替换成普通文件；万一将来某个版本改了写入方式，`./check.sh` 会报
 「不是软链」，跑一次 `./install.sh` 修好即可。
 
@@ -49,7 +49,8 @@ cmux 对这两个文件的写入都是跟随软链的（写前 `resolvingSymlink
   快捷键、通知钩子、actions 等；当前文件大部分是模板注释，生效的只有几项）。
 - `~/Library/Application Support/com.cmuxterm.app/config.ghostty`：在 cmux
   设置界面里改终端选项（字体、光标、内边距、透明度、scrollback 等）时写的覆盖文件，
-  它在用户自己的 Ghostty 配置之后加载。
+  它在用户自己的 Ghostty 配置之后加载。仓库里常驻一个只带注释的同名文件，安装时
+  就把软链接好；以后在 cmux 设置里改东西，改动会直接落进仓库，`git status` 立刻能看见。
 - `cmux/defaults.plist`：UserDefaults 里属于「用户偏好」的那一小撮（外观模式、
   侧边栏样式、右侧栏模式、文件浏览器宽度等），白名单见 `scripts/export-defaults.py`。
 

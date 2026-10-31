@@ -38,12 +38,9 @@ echo "== 1. 终端与 cmux 配置 =="
 link "ghostty/config" "$HOME/.config/ghostty/config"
 link "cmux/cmux.json" "$HOME/.config/cmux/cmux.json"
 
-# cmux 设置界面写出的终端覆盖项（只有仓库里存了才接）
-if [ -f "$REPO/cmux/config.ghostty" ]; then
-  link "cmux/config.ghostty" "$APP_SUPPORT/config.ghostty"
-else
-  echo "跳过：仓库里没有 cmux/config.ghostty（说明没在 cmux 设置界面改过终端选项）"
-fi
+# cmux 设置界面写出的终端覆盖项：仓库里始终保留这个文件并接上软链，
+# 这样以后在 cmux 设置里改字体 / 光标 / 内边距等，改动会直接落在仓库里，git 一看就知道。
+link "cmux/config.ghostty" "$APP_SUPPORT/config.ghostty"
 
 echo
 echo "== 2. cmux 的 UserDefaults 快照 =="

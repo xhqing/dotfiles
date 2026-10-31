@@ -1,0 +1,8 @@
+# cmux 设置界面（Settings → Terminal → Ghostty 那几行）写出的终端覆盖项。
+#
+# 为什么不直接写在这里：cmux 会把值写进这个文件（字体、字号、光标、内边距、
+# 透明度、scrollback 等），它在 ~/.config/ghostty/config 之后加载，所以能覆盖
+# 上面的同名键。这里只留注释，实际内容由 cmux 自己写。
+#
+# 手工要改的话，优先改 ~/.config/ghostty/config（两个终端都读）；
+# 只有「只想影响 cmux、不想影响 Ghostty」的时候才写在这里。
