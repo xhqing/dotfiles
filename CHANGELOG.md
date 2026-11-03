@@ -1,5 +1,13 @@
 # 更新日志
 
+## 未发布
+
+### 变更
+
+- **cmux 打字延迟治理**（2026-11-03）：`cmux/cmux.json` 关闭通知相关的「逐字触发」与「通知页重绘」开关——`notifications.paneFlashOnTyping` / `paneFlash` / `paneFlashDoubleBlink` / `unreadPaneRing` 全部置 `false`，`sidebar.showNotificationMessage` 置 `false`，`app.reorderOnNotification` 置 `false`，`automation.suppressSubagentNotifications` 置 `true`。
+  - 起因：在 cmux 里用 pi 打字明显卡顿，而同一台机器上的 Ghostty 原生终端不卡。排查后确认问题不在本机资源（内存压力两个终端共享同一份，Ghostty 不卡即排除），而在 cmux 自己的通知链路：上游 issue #8900（S2 级，至今未修复）中 `NotificationsPage` 与已挂载 workspace 同处一个 ZStack，只靠 `opacity(0)` 隐藏、从不卸载，agent 每流式输出一次就在主线程重跑页面 body 并重建 MarkdownUI feed；再叠加官方 schema 里 `paneFlashOnTyping` 默认 `true`（含义是「打字消除本 pane 的通知时闪烁该 pane」），卡顿就正好落在开始打字那一瞬间。
+  - 通知本身保留：侧栏未读标记、Dock 角标都不受影响，只是不再为它重绘整块面板。
+
 ## 0.2.0 — 2026-10-31
 
 ### 变更

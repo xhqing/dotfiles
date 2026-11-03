@@ -3,12 +3,43 @@
   "schemaVersion": 1,
 
   "app": {
-    "warnBeforeClosingTab": false
+    "warnBeforeClosingTab": false,
+    "reorderOnNotification": false
   },
 
   "browser": {
     "openTerminalLinksInCmuxBrowser": false,
     "interceptTerminalOpenCommandInCmuxBrowser": false
+  },
+
+  // ── 打字延迟治理（2026-11-03）──────────────────────────────────────────
+  // 起因：在 cmux 里用 pi 打字明显卡顿，同一台机器上 Ghostty 原生终端不卡。
+  // 排查结论：不是本机资源（内存压力两个终端共享，Ghostty 不卡即排除），
+  // 而是 cmux 自己的通知链路。对应两个上游 issue：
+  //   #8900（S2，仍未修复）NotificationPage 与 workspace 同处一个 ZStack，
+  //         只靠 opacity(0) 隐藏、从不卸载；agent 每流式输出一次，就在主线程
+  //         重跑 body 并重建 MarkdownUI feed。
+  //   #4681（已修复）其中一条评论给出了关键规避：agent 配置里的动画标题
+  //         是主要放大器。
+  // 另外官方 schema 显示 paneFlashOnTyping 默认 true，含义是「打字消除本 pane
+  // 的通知时闪烁该 pane」，所以卡顿恰好落在开始打字那一瞬间。
+  // 下面把「逐字触发」与「通知页重绘」的开关全部关掉；通知本身仍然保留，
+  // 侧栏的未读标记不受影响，只是不再为它重绘整块面板。
+  "notifications": {
+    "paneFlashOnTyping": false,
+    "paneFlash": false,
+    "paneFlashDoubleBlink": false,
+    "unreadPaneRing": false
+  },
+
+  // 侧栏不再渲染上一条通知的正文，减少排版与 Markdown 渲染开销。
+  "sidebar": {
+    "showNotificationMessage": false
+  },
+
+  // 嵌套子 agent 的完成通知不再上报，避免一个任务里多次触发 store publish。
+  "automation": {
+    "suppressSubagentNotifications": true
   },
 
   // This file uses JSON with comments (JSONC).
