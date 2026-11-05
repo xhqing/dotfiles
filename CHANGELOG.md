@@ -8,6 +8,12 @@
 
 ## 未发布
 
+### 仓库治理
+
+- **`.gitignore` 补 Python 缓存规则**（2026-11-05）：新增 `__pycache__/` 与 `*.pyc`。
+  - 起因：`scripts/` 下跑过 Python 脚本后生成了未跟踪目录 `scripts/__pycache__/`（`git status` 显示 `?? scripts/__pycache__/`），说明 `.gitignore` 漏了 Python 缓存，存在被误提交的风险。
+  - 改了什么：`.gitignore` 末尾加「Python 缓存」小节，含 `__pycache__/`（目录，任意层级）与 `*.pyc`（单个字节码文件）。
+
 ### 变更
 
 - **cmux 打字延迟治理**（2026-11-03）：`cmux/cmux.json` 关闭通知相关的「逐字触发」与「通知页重绘」开关——`notifications.paneFlashOnTyping` / `paneFlash` / `paneFlashDoubleBlink` / `unreadPaneRing` 全部置 `false`，`sidebar.showNotificationMessage` 置 `false`，`app.reorderOnNotification` 置 `false`，`automation.suppressSubagentNotifications` 置 `true`。
