@@ -20,6 +20,11 @@
   - 起因：在 cmux 里用 pi 打字明显卡顿，而同一台机器上的 Ghostty 原生终端不卡。排查后确认问题不在本机资源（内存压力两个终端共享同一份，Ghostty 不卡即排除），而在 cmux 自己的通知链路：上游 issue #8900（S2 级，至今未修复）中 `NotificationsPage` 与已挂载 workspace 同处一个 ZStack，只靠 `opacity(0)` 隐藏、从不卸载，agent 每流式输出一次就在主线程重跑页面 body 并重建 MarkdownUI feed；再叠加官方 schema 里 `paneFlashOnTyping` 默认 `true`（含义是「打字消除本 pane 的通知时闪烁该 pane」），卡顿就正好落在开始打字那一瞬间。
   - 通知本身保留：侧栏未读标记、Dock 角标都不受影响，只是不再为它重绘整块面板。
 
+- **cmux 控制 socket 放开到 `automation` 档**（2026-11-07）：`cmux/cmux.json` 新增 `automation.socketControlMode: "automation"`。
+  - 起因：pi 的 diff-view 扩展（`/open-diff`）在 Ghostty 里跑的 pi 会话中被 cmux 拒绝，报 `Access denied - only processes started inside cmux can connect`——cmux 的自动化 socket 默认 `cmuxOnly`，只接受「cmux 自己启动的进程树」，而 Ghostty 里的 pi 不属于那棵树。
+  - 改了什么：档位改成 `automation`（同一 macOS 用户的本地进程都能连控制 socket），外部终端才能驱动 cmux（diff 面板、脚本）。
+  - 代价：本机任何同用户进程都能控制 cmux（包括往终端里发命令）。共用机器或不放心时改回 `cmuxOnly`，改成在 cmux 里启动 pi。
+
 ## 0.2.0 — 2026-10-31
 
 ### 变更
