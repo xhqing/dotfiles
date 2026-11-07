@@ -12,6 +12,17 @@
     "interceptTerminalOpenCommandInCmuxBrowser": false
   },
 
+  // ── 控制 socket 允许外部终端连接（2026-11-07）──────────────────────────
+  // 默认 cmuxOnly：只允许「由 cmux 启动的进程树」连控制 socket。在 Ghostty 里跑的
+  // pi 不属于这棵树，/open-diff 这类命令会被拒，报
+  // 「Access denied - only processes started inside cmux can connect」。
+  // automation 放开到「同一 macOS 用户的本地进程」——个人机、需要从外部终端驱动
+  // cmux（diff 面板、脚本）时用这一档；代价是本机任何同用户进程都能控制 cmux
+  // （包括往终端里发命令），不放心就改回 cmuxOnly。
+  "automation": {
+    "socketControlMode": "automation"
+  },
+
   // ── 打字延迟治理（2026-11-03）──────────────────────────────────────────
   // 起因：在 cmux 里用 pi 打字明显卡顿，同一台机器上 Ghostty 原生终端不卡。
   // 排查结论：不是本机资源（内存压力两个终端共享，Ghostty 不卡即排除），
