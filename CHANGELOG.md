@@ -8,6 +8,12 @@
 
 ## 未发布
 
+### 新增（子项目专属规则文件 `.pi/APPEND_SYSTEM.md`）
+
+- **为什么改**：用户 2026-11-07 定下全局 Leader / Worker 分工——子项目的具体活由「以子项目根目录 / 子项目 worktree 为工作目录」的 Worker 会话干，而 pi 只加载 cwd 那一层的 `.pi/`（不向上继承）。子项目专属的硬规则没有别的地方可放：写进 Agent 项目的 `AGENTS.md` 既不会被 Worker 加载，也会污染其它兄弟子项目。
+- **改了什么**：新增 `.pi/APPEND_SYSTEM.md`（52 行），只写本项目特有的硬约束——「实体只存一份 + 软链 + `mappings.conf` 单一登记」的核心机制不可改、新增 App 的固定六步、共用配置文件必须显式注明（目前只有 `ghostty/config`）、不许破坏的既有行为（中文回退链 `font-family = PingFang SC`、`cmux.json` 600、`defaults.plist` 白名单备份）、公开仓库的敏感信息边界（登录凭证 / keychain token / 遥测 ID / 会话快照不进仓库，socket 密码只写占位符）、`./check.sh` 三处全绿才算改完。全局规则与 Kit 身份仍来自仓库根 `AGENTS.md` 软链接，文件里不重述、不覆盖。
+- **影响**：纯新增规则文件，不改 `mappings.conf`、`install.sh`、`check.sh` 与任何 App 配置；不涉版本号（配置 / 文档类不发版）。
+
 ### 仓库治理
 
 - **`.gitignore` 补 Python 缓存规则**（2026-11-05）：新增 `__pycache__/` 与 `*.pyc`。
