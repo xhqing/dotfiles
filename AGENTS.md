@@ -1,12 +1,12 @@
 # dotfiles
 
-> ExecutiveAssistantAgent（Kit）名下的子项目 · 本项目规则本体
+> assistant-agent（Kit）名下的子项目 · 本项目规则本体
 
 按 App 分类的个人配置文件仓库：配置的实体只存仓库一份，系统位置靠软链指过来，换新机器 clone 后跑一次 `./install.sh` 就恢复成同一套习惯。目前收录 Ghostty 与 cmux。
 
 ## 归谁负责
 
-本项目由 **Kit**（ExecutiveAssistantAgent）负责维护。改动范围跨出本项目时，先向 Kit 说明，不自行扩张改动面。
+本项目由 **Kit**（assistant-agent）负责维护。改动范围跨出本项目时，先向 Kit 说明，不自行扩张改动面。
 
 ## 你的角色
 
