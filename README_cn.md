@@ -10,6 +10,10 @@
 
 # dotfiles —— 按 App 分类的配置文件仓库
 
+> **本项目已于 2026-11-16 退役。** 全部内容已迁入
+> [agents-infra](https://github.com/xhqing/agents-infra) 的 `apps/` 目录——ghostty 与 cmux
+> 是每个 agent 会话都在其中运行的终端，配置属于基础设施。本仓库仅作历史存档，不再更新。
+
 把这台机器上值得带走的 App 配置收在一个 git 仓库里，换设备时 clone 下来跑一次
 `./install.sh` 就恢复成同一套习惯，不用重新点一遍设置。
 
