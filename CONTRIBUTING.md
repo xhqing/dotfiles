@@ -10,21 +10,17 @@ you send, and under what licence the project uses it.
 not transfer ownership to this project or to its maintainer. A transfer of
 copyright would need a written agreement, and a pull request is not one.
 
-The project's copyright notice reads "xhqing and contributors" because
-contributors are acknowledged as rights holders in their own right — not
-because their rights were signed over.
+The project's copyright notice names contributors alongside the maintainer
+because contributors are acknowledged as rights holders in their own right —
+not because their rights were signed over.
 
 ## The licence you grant
 
 By submitting a pull request, you agree that your contribution is licensed to
-this project under the project's own licence:
-
-- **Software projects:** the **MIT License**
-- **Non-software projects** (prose, articles, tutorials): the **Creative
-  Commons Attribution 4.0 International License (CC BY 4.0)**
-
-That is a licence, not an assignment. You keep the copyright; the project gains
-permission to use, modify and redistribute your work under that licence.
+this project under **MIT** — the licence this project itself uses
+(see `LICENSE.md`). That is a licence, not an assignment: you keep the
+copyright, and the project gains permission to use, modify and redistribute
+your work under that licence.
 
 If you are not comfortable with this arrangement, open an issue first and we can
 work something else out before you write any code.
