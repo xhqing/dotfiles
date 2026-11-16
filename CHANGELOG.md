@@ -1,5 +1,11 @@
 # 更新日志
 
+### 退役（内容迁入 agents-infra 的 `apps/`，2026-11-16）
+
+- **为什么改**：ghostty 与 cmux 是 agent 会话实际运行的终端，配置错了所有 agent 一起错——它们属于基础设施，不应单独挂在一个侧边仓库、由另一条链路维护。用户 2026-11-16 决定：本项目内容全部迁入 `agents-infra`。
+- **改了什么**：`ghostty/`、`cmux/`、`mappings.conf`、`install.sh`、`check.sh`、`export-defaults.sh`、`scripts/` 与双版根说明迁入 `github.com/xhqing/agents-infra` 的 `apps/`（那边人工维护、不由发布脚本生成）；本机 `~/.config/{ghostty,cmux}` 的软链已重指向 `~/Developer/agents-infra/apps/...`，`./check.sh` 全绿。两份 README 顶部加上退役指引。
+- **回归风险**：无。迁移前的完整历史与内容都留在本仓库，只追加说明、不改旧内容。
+
 ### 变更（Kit 项目更名为 assistant-agent，2026-11-09）
 
 - **为什么改**：Kit 的 Agent 项目 2026-11-09 由 `ExecutiveAssistantAgent` 更名为 `assistant-agent`——项目名只求「尽可能简单、能体现主要职责」，不再要求以 `Agent` 结尾；项目性质改由 `README.md` 的 `Type-AI Agent` 徽章判定，与名字无关。本仓库是 Kit 名下的子项目，`AGENTS.md` 的归属说明用旧名就会指错对象。

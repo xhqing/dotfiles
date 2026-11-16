@@ -10,6 +10,11 @@
 
 # dotfiles — app configs, versioned and symlinked
 
+> **This project was retired on 2026-11-16.** All of its content moved into the `apps/`
+> directory of [agents-infra](https://github.com/xhqing/agents-infra) — ghostty and cmux are
+> the terminals every agent session runs in, so their configs are infrastructure. This
+> repository is kept as a historical archive and is no longer updated.
+
 Every app config worth carrying to a new machine lives here in one git repository.
 Clone it, run `./install.sh`, and the new machine picks up the same habits — no
 clicking through settings all over again.
