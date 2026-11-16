@@ -13,6 +13,19 @@
 
 ## 未发布
 
+### 变更（cmux v0.65.2.2-r21 配置解耦，2026-11-16）
+
+- **为什么改**：cmux 自 v0.65.2.2-r21 起不再读 `~/.config/ghostty/config`（上游 Issue #70 把两个应用的配置彻底解耦），终端外观只认它自己的 `~/.config/cmux/config.ghostty`。仓库里原来的部署目标（App Support 下的 `config.ghostty`）与全套文档口径随之失效——用户升级到 r21 后光标变回方块、字体回到默认，就是这份配置没跟上导致的。
+- **改了什么**：
+  - `cmux/config.ghostty` 整体重写：从「只留注释的占位文件」改为声明式终端配置（主题 `GitHub Dark Default`、`Menlo` + `PingFang SC` + Bold、字号 14、绿色竖线光标 + 300% 粗细、`shell-integration-features` 固定光标），并写明「r21 起 cmux 只读这份」「改完 `cmux reload-config`」。
+  - `mappings.conf`：`cmux/config.ghostty` 的目标路径由 `~/Library/Application Support/com.cmuxterm.app/config.ghostty` 改为 `~/.config/cmux/config.ghostty`；`ghostty/config` 的说明由「被 Ghostty 与 cmux 共用」改为「只有 Ghostty 读」。
+  - `cmux/README.md`：表格里的系统位置更新；原「两条跨 App 关系」整节重写为「配置已彻底解耦」；中文 `font-codepoint-map` 行为说明限定为「只对 cmux 自己那份配置生效」。
+  - `ghostty/config`：文件头注释与中文回退链说明由「共用文件」改为「只被 Ghostty 读」，并注明 cmux 那份里写了同样的两行。
+  - `ghostty/README.md`：「⚠️ 共用文件」节重写为「只有 Ghostty 读；cmux 已解耦」，说明两边外观各自维护、当前共同项（主题 / 字体族 / 字号 / 光标 / shell integration）值一致。
+  - 根 `README.md`：「共用配置文件」表改为「配置文件归属」表（当前无跨 App 共用项）、目录结构注释、新机器恢复步骤、日常维护表、「为什么不直接复制」、「已知注意点」一并更新；「两台机器不要同时写」不再依赖已废止的「`~/Developer` 全量镜像」口径。
+- **回归检查**：Ghostty 侧行为不变（`ghostty/config` 只改注释，键值一字未动，`ghostty +show-config` 输出不变）；cmux 侧恢复光标与字体（`cmux config paths` 的 Related 项指向 `~/.config/cmux/config.ghostty`，与 `mappings.conf` 一致；用 cmux 自带的 Ghostty 解析器验过 `cursor-style = bar` / `cursor-color = #00ff00` / `adjust-cursor-thickness = 300%` / `font-size = 14` / `theme = GitHub Dark Default` 均被读到）。
+- **顺带修复**：`.pi/APPEND_SYSTEM.md` 在 2026-11-09 的「子项目与 Agent 项目完全解耦」提交（`57ae897`）里被一次错误替换吞掉正文——多处段落变成重复的同一句模板，`## 这是什么`、核心机制第 1 / 3 条、`## 不许破坏的既有行为` 第 3 条、`## 验证方式` 的代码块全部丢失。本次按该文件首次加入时的版本（`eef7187`）恢复，并按新口径更新「配置文件归属」一节与中文回退链一条。
+
 ### 新增（子项目专属规则文件 `.pi/APPEND_SYSTEM.md`）
 
 - **为什么改**：用户 2026-11-07 定下全局 Leader / Worker 分工——子项目的具体活由「以子项目根目录 / 子项目 worktree 为工作目录」的 Worker 会话干，而 pi 只加载 cwd 那一层的 `.pi/`（不向上继承）。子项目专属的硬规则没有别的地方可放：写进 Agent 项目的 `AGENTS.md` 既不会被 Worker 加载，也会污染其它兄弟子项目。
