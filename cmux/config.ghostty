@@ -1,13 +1,31 @@
-# cmux 设置界面（Settings → Terminal → Ghostty 那几行）写出的终端覆盖项。
+# cmux 自己的终端配置（Ghostty 配置语法，但只有 cmux 读这个文件）。
 #
-# ⚠️ 跨 App 关系（两句话）：
-#   1. 本文件用 Ghostty 的配置语法，但**只有 cmux 读它**（Ghostty 应用不会读这个路径）。
-#   2. Ghostty 与 cmux 真正共用的配置文件是 ../ghostty/config（即 ~/.config/ghostty/config），
-#      两个终端都读；本文件加载在它之后，能覆盖同名键。
+# 为什么需要这份文件：从 v0.65.2.2-r21 起 cmux 不再读 ~/.config/ghostty/config
+# （Issue #70 把两个应用的配置彻底解耦），终端外观必须在这里重新声明一遍，
+# 否则全部落回 Ghostty 的内置默认——方块光标、主题自带的光标色、默认字体。
 #
-# 为什么不直接写在这里：cmux 会把值写进这个文件（字体、字号、光标、内边距、
-# 透明度、scrollback 等），它在 ~/.config/ghostty/config 之后加载，所以能覆盖
-# 上面的同名键。这里只留注释，实际内容由 cmux 自己写。
-#
-# 手工要改的话，优先改 ~/.config/ghostty/config（两个终端都读）；
-# 只有「只想影响 cmux、不想影响 Ghostty」的时候才写在这里。
+# 本文件由 dotfiles 仓库托管（~/Developer/dotfiles/cmux/config.ghostty），
+# 通过 install.sh 软链到 ~/.config/cmux/config.ghostty。
+# 改完执行 `cmux reload-config` 生效（终端原地刷新，不用重启 App）。
+
+# 主题：GitHub Dark Default（与 Ghostty 那边保持一致）
+theme = GitHub Dark Default
+
+# 字体：Menlo，默认文本样式映射到 Bold，实现普通文字默认加粗
+font-family = Menlo
+font-style = Bold
+# 第二字体族：中文回退到 PingFang SC。
+# 这一行不要删：两项以上 font-family 才算「用户自己配了回退链」，cmux 才不会
+# 自动注入中日韩 font-codepoint-map（那份注入把中文钉死在 PingFang SC Regular，
+# 比 Ghostty 细一档）。细节见 dotfiles 的 ghostty/config 注释。
+font-family = PingFang SC
+# 字号：Ghostty 默认 13，调大一档到 14
+font-size = 14
+
+# 光标：绿色竖线，加粗到 300%（Ghostty 默认是满格方块 + 主题光标色）
+# no-cursor 关闭 shell integration 在提示符处自动改光标的行为，让竖线全程固定；
+# vim 等程序仍可用转义序列按模式改光标，终端配置管不住，属正常现象。
+cursor-style = bar
+adjust-cursor-thickness = 300%
+cursor-color = #00ff00
+shell-integration-features = no-cursor,no-sudo,title,no-ssh-env,no-ssh-terminfo,path

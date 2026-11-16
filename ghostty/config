@@ -1,6 +1,6 @@
-# ⚠️ 共用文件：Ghostty 与 cmux 两个终端都读这份配置（cmux 基于 libghostty，读同一个路径）。
-# 改这里会同时影响两个终端；只想影响 cmux 的终端设置请改
-#   ~/Library/Application Support/com.cmuxterm.app/config.ghostty
+# 本文件只被 Ghostty 读。cmux 自 v0.65.2.2-r21 起不再读 ~/.config/ghostty/config，
+# 只读它自己的 ~/.config/cmux/config.ghostty——要改 cmux 的终端外观请改那份。
+# 本文件由 dotfiles 仓库托管（~/Developer/dotfiles/ghostty/config），软链到 ~/.config/ghostty/config。
 # 本文件由 dotfiles 仓库托管（~/Developer/dotfiles/ghostty/config），软链到 ~/.config/ghostty/config。
 #
 # 主题：GitHub Dark Default（GitHub 官网标准暗色，背景 #0d1117）
@@ -21,17 +21,13 @@ font-family = Menlo
 font-style = Bold
 # 第二字体族：中文回退到 PingFang SC（2026-10-30 加）。
 #
-# 为什么必须写这一行：cmux 是基于 Ghostty 内核（libghostty）的终端，为了不让中文落到
-# 奇怪的装饰字体上，它会在**用户没有显式多字体族回退链**时，自动往终端配置里注入一段
-#   font-codepoint-map = U+4E00-U+9FFF=PingFang SC  （以及若干中日韩区段）
-# 而这种 codepoint-map 在 Ghostty 里**一律按 Regular 字重解析**（源码 CodepointResolver
-# 里 `.style = .regular` 写死）。结果就是：Ghostty 里的中文走正常回退解析、能吃到 Bold
-# 样式，落到 PingFang SC Semibold；cmux 里的中文被钉死在 PingFang SC Regular，看起来更细。
+# 为什么写这一行：显式两项 font-family 就构成「用户自己配的回退链」，中文走 Ghostty 的
+# 正常回退解析、能吃到 Bold 字重（PingFang SC Semibold）。本文件只影响 Ghostty。
 #
-# 只要 font-family 出现两项以上，cmux 就认定「用户自己配了回退链」，不再注入那段 map
-# （cmux 源码 GhosttyConfigDiscovery.swift 的 autoInjectedCJKFontMappings()：
-#  summary.hasExplicitFontFamilyFallbackChain 为真时直接返回 nil）。
-# 于是两个终端都走 Ghostty 自己的回退解析，中文都是 PingFang SC Semibold，外观一致。
+# cmux 自 v0.65.2.2-r21 起只读自己的 ~/.config/cmux/config.ghostty，那边也写了同样两行：
+# cmux 在用户没有显式多字体族回退链时，会自动注入一组中日韩 font-codepoint-map，而
+# codepoint-map 在 Ghostty 内核里一律按 Regular 字重解析，中文就被钉在 PingFang SC Regular
+# 上、比这里细一档。两份配置各自维护、各自生效（见 cmux/config.ghostty 与 cmux/README.md）。
 font-family = PingFang SC
 
 # 字号：默认 13，调大一档到 14
