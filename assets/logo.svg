@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="200" viewBox="0 0 640 200" role="img" aria-label="dotfiles — app configs, versioned and symlinked">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2DD4BF"/>
+      <stop offset="100%" stop-color="#0F3D3E"/>
+    </linearGradient>
+    <linearGradient id="mark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#D1FAE5"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="200" rx="28" fill="url(#bg)"/>
+  <rect x="58" y="64" width="72" height="72" rx="18" fill="none" stroke="url(#mark)" stroke-width="7"/>
+  <path d="M74 88 L86 100 L74 112" fill="none" stroke="url(#mark)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="94" y="106" width="20" height="6" rx="3" fill="url(#mark)"/>
+  <text x="196" y="96" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="36" font-weight="700" fill="#FFFFFF">dotfiles</text>
+  <text x="196" y="130" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="16" fill="#D1FAE5">App configs, versioned and symlinked</text>
+</svg>

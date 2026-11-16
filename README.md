@@ -1,100 +1,129 @@
-# dotfiles（按 App 分类的配置文件仓库）
+<div align="center">
+  <img src="assets/logo.svg" alt="dotfiles" width="640">
 
-把这台机器上值得带走的 App 配置收在一个 git 仓库里，换设备时 clone 下来跑一次
-`./install.sh` 就恢复成同一套习惯，不用重新点一遍设置。
+  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow)](LICENSE.md)
+  [![Version](https://img.shields.io/badge/Version-0.2.0-blue)](CHANGELOG.md)
+  [![Type](https://img.shields.io/badge/Type-Project-lightgrey)](#)
 
-## 目录结构
+  [简体中文](README_cn.md)
+</div>
+
+# dotfiles — app configs, versioned and symlinked
+
+Every app config worth carrying to a new machine lives here in one git repository.
+Clone it, run `./install.sh`, and the new machine picks up the same habits — no
+clicking through settings all over again.
+
+## Layout
 
 ```
 dotfiles/
-├── mappings.conf           # 仓库内路径 → 系统路径 的映射表（install / check 共用，加 App 只改这里）
-├── ghostty/                # App：Ghostty 终端
-│   ├── README.md           #   本目录的 config 只被 Ghostty 读，见下
+├── mappings.conf           # repo path → system path map (install / check share it; a new app only touches this)
+├── ghostty/                # App: the Ghostty terminal
+│   ├── README.md           #   this directory's config is read by Ghostty only, see below
 │   └── config              #   → ~/.config/ghostty/config
-├── cmux/                   # App：cmux 终端
-│   ├── README.md           #   ⚠️ cmux 自 r21 起只读自己的终端配置，见下
+├── cmux/                   # App: the cmux terminal
+│   ├── README.md           #   ⚠️ since r21 cmux reads only its own terminal config, see below
 │   ├── cmux.json           #   → ~/.config/cmux/cmux.json
 │   ├── config.ghostty      #   → ~/.config/cmux/config.ghostty
-│   └── defaults.plist      #   cmux 的 UserDefaults 偏好快照（安装时写回，不落软链）
-├── install.sh              # 新机器部署：按映射表建软链 + 写回快照 + cmux reload-config
-├── check.sh                # 检查软链 / 快照 / 仓库状态
-├── export-defaults.sh      # 改了设置后刷新 UserDefaults 快照
-└── scripts/                # 上面那个快照用到的导出 / 写回工具
+│   └── defaults.plist      #   cmux UserDefaults snapshot (written back on install, not symlinked)
+├── install.sh              # new-machine setup: symlink per the map + write back the snapshot + cmux reload-config
+├── check.sh                # verify symlinks / snapshot / repo state
+├── export-defaults.sh      # refresh the UserDefaults snapshot after changing settings
+└── scripts/                # export / apply helpers behind that snapshot
 ```
 
-## 配置文件归属（重要）
+## Who reads which file (important)
 
-物理文件只存仓库一份，按 App 放在自己的目录里，然后把「谁在读」记在这里——
-**新增或改动这类文件时必须同步本表与相关目录 README**。
+Each config exists once in the repository, inside its app's directory, and this table
+records who reads it — **whenever that changes, update this table and the directory
+README in the same change**.
 
-| 仓库内文件 | 系统位置 | 谁在读 | 说明 |
+| Repository file | System location | Read by | Notes |
 |---|---|---|---|
-| `ghostty/config` | `~/.config/ghostty/config` | **只有 Ghostty** | Ghostty 的终端配置（主题、字体、字号、光标、窗口尺寸、Quick Terminal 热键） |
-| `cmux/config.ghostty` | `~/.config/cmux/config.ghostty` | **只有 cmux** | cmux 自己的终端配置，用 Ghostty 语法——「Ghostty 格式」≠「Ghostty 会用」。自 cmux v0.65.2.2-r21 起 cmux 不再读 `ghostty/config`，外观只认这份 |
-| `cmux/cmux.json` | `~/.config/cmux/cmux.json` | **只有 cmux** | 应用层设置，设置界面读它也会写回 |
-| `cmux/defaults.plist` | `com.cmuxterm.app` 的 UserDefaults 域 | **只有 cmux** | 偏好快照，安装时写回，不建软链 |
+| `ghostty/config` | `~/.config/ghostty/config` | **Ghostty only** | Terminal settings for Ghostty (theme, fonts, size, cursor, window geometry, Quick Terminal hotkey) |
+| `cmux/config.ghostty` | `~/.config/cmux/config.ghostty` | **cmux only** | cmux's own terminal config in Ghostty syntax — "Ghostty format" does not mean "Ghostty reads it". Since cmux v0.65.2.2-r21 cmux no longer reads `ghostty/config`; this file alone drives its look |
+| `cmux/cmux.json` | `~/.config/cmux/cmux.json` | **cmux only** | App-level settings; the settings UI reads and writes it |
+| `cmux/defaults.plist` | the `com.cmuxterm.app` UserDefaults domain | **cmux only** | Preference snapshot, written back on install, not symlinked |
 
-一句话记忆：**当前没有跨 App 共用的配置文件**。cmux 与 Ghostty 的终端配置已彻底解耦
-（cmux v0.65.2.2-r21 起，Issue #70），同一个外观设置要在两份文件里各写一次。
+In one line: **no config file is shared between apps today.** cmux and Ghostty were
+fully decoupled in cmux v0.65.2.2-r21 (upstream Issue #70), so a look shared by both
+terminals has to be written twice, once per file.
 
-## 新机器恢复步骤
+## Restoring on a new machine
 
 ```bash
 git clone git@github.com:xhqing/dotfiles.git ~/Developer/dotfiles
 cd ~/Developer/dotfiles
-./install.sh          # 建软链 + 写回 UserDefaults + cmux reload-config
+./install.sh          # symlinks + UserDefaults write-back + cmux reload-config
 ```
 
-注意：
+Notes:
 
-- `install.sh` 会把目标位置上已存在的普通文件改名成 `xxx.bak.<时间戳>` 再建软链，不会覆盖丢东西。
-- 装之前不需要先装 Ghostty：cmux 自 v0.65.2.2-r21 起只读自己的 `~/.config/cmux/config.ghostty`，不依赖 `~/.config/ghostty/config`。
-- 恢复后如果 cmux 已经在跑，手动 `cmux reload-config` 一次即可。
+- `install.sh` renames any existing regular file at the target to `xxx.bak.<timestamp>` before creating the symlink, so nothing is lost.
+- Ghostty does not need to be installed first: since v0.65.2.2-r21 cmux reads only its own `~/.config/cmux/config.ghostty` and no longer depends on `~/.config/ghostty/config`.
+- If cmux is already running afterwards, run `cmux reload-config` once.
 
-## 日常维护
+## Day-to-day maintenance
 
-| 改了什么 | 怎么进仓库 |
+| What changed | How it gets into the repo |
 |---|---|
-| Ghostty 的终端设置（字体、主题、光标…） | 直接编辑 `~/.config/ghostty/config`（其实是仓库文件）→ `git commit` |
-| cmux 的终端设置（字体、主题、光标…） | 直接编辑 `~/.config/cmux/config.ghostty`（其实是仓库文件）→ `cmux reload-config` → `git commit`；想让两个终端一致时，同一个值要在两份文件里各写一次 |
-| cmux 设置界面里的终端选项 | 写进 `~/.config/cmux/config.ghostty`（仓库文件）→ `git status` 能看到 → `git commit` |
-| cmux.json / UI 里的偏好 | 改完跑 `./export-defaults.sh` → `git commit` |
+| Ghostty terminal settings (font, theme, cursor…) | Edit `~/.config/ghostty/config` directly (it is the repo file) → `git commit` |
+| cmux terminal settings (font, theme, cursor…) | Edit `~/.config/cmux/config.ghostty` directly (it is the repo file) → `cmux reload-config` → `git commit`. To keep both terminals identical, write the same value in both files |
+| Terminal options touched in the cmux settings UI | They land in `~/.config/cmux/config.ghostty` (repo file) → visible in `git status` → `git commit` |
+| Preferences in cmux.json / the UI | Run `./export-defaults.sh` → `git commit` |
 
-不确定状态时跑 `./check.sh`：软链断了、快照过期、仓库有未提交改动都会报出来。
+When unsure, run `./check.sh`: it reports broken symlinks, a stale snapshot, and
+uncommitted changes.
 
-## 新增一个 App 的配置
+## Adding a new app
 
-1. 建目录 `apps 名字/`（简称、全小写）；
-2. 把配置文件放进去；
-3. 在 `mappings.conf` 加一行：`仓库内路径 <TAB> 系统目标路径 <TAB> 权限或 - <TAB> 说明`；
-4. 在目录里写 `README.md`：这份配置是什么、谁在读、**有没有别的 App 也读它**；
-5. 如果确实有多个 App 共用同一份文件，同步更新上面的「配置文件归属」表；
-6. 跑 `./install.sh` 接上软链，`./check.sh` 确认全绿，然后提交。
+1. Create a directory named after the app (short, lowercase);
+2. Drop the config files in;
+3. Add a line to `mappings.conf`: `repo-relative path <TAB> system path <TAB> mode or - <TAB> note`;
+4. Write a `README.md` in that directory: what the config is, who reads it, **and whether any other app reads it too**;
+5. If several apps really do share one file, update the "Who reads which file" table above;
+6. Run `./install.sh` to wire the symlinks, confirm `./check.sh` is all green, then commit.
 
-## 为什么不直接复制、要建软链
+## Why symlinks instead of copies
 
-配置只有一份实体，改一处两边同步，不会出现「仓库里是旧版本」的漂移。
+There is exactly one copy of each config, so editing it updates both sides and the
+repo can never drift into "the old version".
 
-cmux 对 `cmux.json` 的写入会先解析软链再落盘（源码里 `resolvingSymlinksInPath` 后才写）；
-`config.ghostty` 现在也是软链，万一某个版本改成原子写替换（链接变成普通文件），
-`./check.sh` 会报「不是软链」，跑一次 `./install.sh` 修好。
+cmux resolves symlinks before writing `cmux.json` (the source calls
+`resolvingSymlinksInPath` before saving). `config.ghostty` is a symlink now as well;
+should a future release switch to atomic writes (replacing the link with a regular
+file), `./check.sh` reports "not a symlink" and one `./install.sh` fixes it.
 
-## 备份了什么、没备份什么
+## What is and isn't backed up
 
-**备份（配置）**：`ghostty/config`、`cmux/cmux.json`、`cmux/config.ghostty`、
-`cmux/defaults.plist`（外观模式、侧边栏样式、右侧栏模式、文件浏览器宽度等白名单项）。
+**Backed up (configuration)**: `ghostty/config`, `cmux/cmux.json`,
+`cmux/config.ghostty`, and the whitelisted `cmux/defaults.plist` entries (appearance
+mode, sidebar style, right panel mode, file explorer width, and so on).
 
-**不备份（有意排除）**：登录凭证与 keychain token、遥测 / 安装 ID、会话与工作区快照、
-滚动历史、agent journal、浏览器历史、窗口位置，以及别的工具的配置（需要时另开目录管理）。
+**Deliberately excluded**: login credentials and keychain tokens, telemetry / install
+IDs, session and workspace snapshots, scrollback, agent journals, browser history,
+window positions, and configs of other tools (add a directory when needed).
 
-## 已知注意点
+## Known gotchas
 
-- **中文观感**：`ghostty/config` 与 `cmux/config.ghostty` 里都是 `font-family = Menlo` 之后
-  再加一行 `font-family = PingFang SC`，两份都不能删。cmux 在用户没有多字体族回退链时，
-  会自动把中文钉到 `PingFang SC Regular`，比 Ghostty 细一档；显式写了回退链就不注入。
-  详见 `ghostty/README.md`、`cmux/README.md`。
-- **权限**：`cmux.json` 里可能写 socket 控制密码，文件保持 600（仅本人可读）。
-- **两台机器不要同时写**：同一仓库同一时间只在一台机器上做 git 写操作，否则提交与分支会互相错位。
-- **cmux 升级**可能迁移 `cmux.json` 的 `schemaVersion`，也可能再次改动它读哪些配置路径。
-  升级后跑一次 `./check.sh` 确认软链还在，并对照 `cmux config paths` 确认
-  「Related (cmux's own Ghostty-format terminal config)」仍是 `~/.config/cmux/config.ghostty`。
+- **Chinese text weight**: both `ghostty/config` and `cmux/config.ghostty` declare
+  `font-family = Menlo` followed by `font-family = PingFang SC`; neither line may be
+  removed. Without an explicit font-family fallback chain, cmux injects a CJK
+  codepoint map that pins Chinese to `PingFang SC Regular` — one weight lighter than
+  Ghostty. Declaring the chain suppresses the injection. See `ghostty/README.md` and
+  `cmux/README.md`.
+- **Permissions**: `cmux.json` may hold the control socket password, so it stays at 600.
+- **Don't write from two machines at once**: run git write operations on one machine
+  at a time, or commits and branches will drift apart.
+- **cmux upgrades** may migrate the `cmux.json` `schemaVersion`, and may change which
+  config paths cmux reads. After an upgrade, run `./check.sh` to confirm the symlinks
+  are intact and `cmux config paths` — the line "Related (cmux's own Ghostty-format
+  terminal config)" must still be `~/.config/cmux/config.ghostty`.
+
+## License & Attribution
+
+Copyright (c) 2026 xhqing and contributors. Released under the [MIT License](LICENSE.md).
+
+Attribution: if you use or reference this project, please keep the copyright notice
+and credit the source: [dotfiles](https://github.com/xhqing/dotfiles).

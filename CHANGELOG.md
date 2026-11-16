@@ -13,6 +13,18 @@
 
 ## 未发布
 
+### 新增（项目标配补齐：LICENSE / 双语 README / LOGO / About / CONTRIBUTING）
+
+- **为什么改**：commit skill 第 9 步的标配检测发现本项目缺了几项应有内容——没有 `LICENSE.md`（也就算不出许可证徽章）、只有中文 `README.md`（无 `README_cn.md` 与英文版）、README 无 LOGO / 徽章 / 版权署名段、GitHub About 空白、两份 CONTRIBUTING 还是「软件用 MIT、非软件用 CC BY 4.0」的通用模板（没落到本项目实际许可证）。
+- **改了什么**：
+  - 新增 `LICENSE.md`（MIT 全文，版权行 `Copyright (c) 2026 xhqing and contributors`）。性质判定：配置文件的消费方是 Ghostty / cmux 等程序、改动直接改变程序行为，属软件项目 → MIT。
+  - 新增 `assets/logo.svg`（640×200、圆角 28、青绿渐变、终端窗口象征图形 + 英文项目名与副标题；文字边界校验 PASS）。
+  - `README.md` 改为英文版，原中文内容落到新增的 `README_cn.md`；两版顶部各加居中 LOGO + License / Version / Type 三枚徽章 + 语言互链，底部加「版权与署名」段。正文语义与改动前一致（含 cmux r21 解耦口径）。
+  - `CONTRIBUTING.md` / `CONTRIBUTING_cn.md` 按全局模板重写，许可证名替换为 MIT。
+  - GitHub About 补中英双语 description 与 5 个 topics（dotfiles / macos / ghostty / terminal / configuration-management）。
+  - 新增 `.commit-cache.md`：commit skill 的标配就绪标记与预检审计（不含任何敏感信息）。
+- **回归检查**：`README_cn.md` 正文即改动前的 `README.md` 内容（仅顶部 LOGO / 徽章块与底部版权段是新增）；`.github/scripts/validate.py` 全绿（必备文件、相对链接、语法）；`./install.sh` / `./check.sh` 未改动。
+
 ### 变更（cmux v0.65.2.2-r21 配置解耦，2026-11-16）
 
 - **为什么改**：cmux 自 v0.65.2.2-r21 起不再读 `~/.config/ghostty/config`（上游 Issue #70 把两个应用的配置彻底解耦），终端外观只认它自己的 `~/.config/cmux/config.ghostty`。仓库里原来的部署目标（App Support 下的 `config.ghostty`）与全套文档口径随之失效——用户升级到 r21 后光标变回方块、字体回到默认，就是这份配置没跟上导致的。
